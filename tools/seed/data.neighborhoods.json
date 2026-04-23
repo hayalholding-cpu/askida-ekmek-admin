@@ -1,0 +1,5 @@
+[
+  { "id": "moda",     "name": "Moda",     "cityId": "istanbul", "districtId": "kadikoy", "order": 1, "active": true },
+  { "id": "acibadem", "name": "Acıbadem", "cityId": "istanbul", "districtId": "uskudar", "order": 2, "active": true },
+  { "id": "aksaray",  "name": "Aksaray",  "cityId": "istanbul", "districtId": "fatih",   "order": 3, "active": true }
+]

@@ -1,0 +1,5 @@
+[
+  { "id": "kadikoy", "name": "Kadıköy", "cityId": "istanbul", "order": 1, "active": true },
+  { "id": "uskudar", "name": "Üsküdar", "cityId": "istanbul", "order": 2, "active": true },
+  { "id": "fatih",   "name": "Fatih",   "cityId": "istanbul", "order": 3, "active": true }
+]
