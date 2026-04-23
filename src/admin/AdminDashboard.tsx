@@ -12,6 +12,7 @@ export default function AdminDashboard() {
       }}
     >
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        {/* HEADER */}
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ margin: 0, fontSize: 30, color: "#111827" }}>
             Ana Admin Paneli
@@ -21,6 +22,7 @@ export default function AdminDashboard() {
           </p>
         </div>
 
+        {/* GRID */}
         <div
           style={{
             display: "grid",
@@ -28,6 +30,7 @@ export default function AdminDashboard() {
             gap: 16,
           }}
         >
+          {/* FIRIN EKLE */}
           <Link
             to="/admin/create-baker"
             style={{ textDecoration: "none", color: "inherit" }}
@@ -48,4 +51,79 @@ export default function AdminDashboard() {
                   fontWeight: 700,
                   color: "#111827",
                   marginBottom: 10,
-               
+                }}
+              >
+                Fırıncı Ekle
+              </div>
+              <div style={{ color: "#6b7280", fontSize: 14 }}>
+                Yeni fırın hesabı oluştur.
+              </div>
+            </div>
+          </Link>
+
+          {/* FIRINLAR */}
+          <Link
+            to="/admin/bakeries"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 16,
+                padding: 22,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#111827",
+                  marginBottom: 10,
+                }}
+              >
+                Fırın Listesi
+              </div>
+              <div style={{ color: "#6b7280", fontSize: 14 }}>
+                Kayıtlı fırınları görüntüle.
+              </div>
+            </div>
+          </Link>
+
+          {/* İŞLEMLER */}
+          <Link
+            to="/admin/transactions"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: 16,
+                padding: 22,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#111827",
+                  marginBottom: 10,
+                }}
+              >
+                İşlem Geçmişi
+              </div>
+              <div style={{ color: "#6b7280", fontSize: 14 }}>
+                Tüm işlemleri incele.
+              </div>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
