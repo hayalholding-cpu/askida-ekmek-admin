@@ -1,7 +1,7 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// ⚠️ Buradaki config senin Firebase Web config'in olmalı
+// ⚠️ Buradaki config senin firebase Web config'in olmalı
 const firebaseConfig = {
   apiKey: "AIzaSyBDMKD9ATqkL2Hs9BZmwstzXWLrnk4zusA",
   authDomain: "askida-ekmek-bb8b6.firebaseapp.com" ,

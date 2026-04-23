@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  addDoc,
   collection,
   doc,
   limit,
@@ -9,8 +8,6 @@ import {
   query,
   runTransaction,
   serverTimestamp,
-  setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";

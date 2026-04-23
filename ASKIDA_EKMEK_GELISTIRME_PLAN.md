@@ -39,7 +39,7 @@ Expo Router
 
 Backend:
 
-Firebase Firestore
+firebase Firestore
 
 Harita:
 

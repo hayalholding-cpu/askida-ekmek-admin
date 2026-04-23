@@ -9,7 +9,6 @@ import AdminBakeryDetail from "./AdminBakeryDetail";
 import AdminTransactions from "./AdminTransactions";
 import AdminProducts from "./AdminProducts";
 import FirinciLogin from "./firinci-login";
-import FirinciPanel from "./firinci-panel";
 import TabelaMode from "./admin/pages/TabelaMode";
 
 export default function App() {
@@ -32,7 +31,6 @@ export default function App() {
 <Route path="/tabela" element={<TabelaMode />} />
 
         <Route path="/firinci-login" element={<FirinciLogin />} />
-        <Route path="/firinci-panel" element={<FirinciPanel />} />
 
         <Route path="*" element={<Navigate to="/admin-login" replace />} />
       </Routes>
