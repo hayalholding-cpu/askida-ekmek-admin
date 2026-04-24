@@ -83,15 +83,22 @@ async function request<T = any>(
     console.log("[API BASE]", API_BASE);
     console.log("[API REQUEST]", method, url, body ?? null);
 
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal: controller.signal,
-    });
+ const token =
+  localStorage.getItem("admin_token") ||
+  localStorage.getItem("adminToken") ||
+  localStorage.getItem("idToken") ||
+  localStorage.getItem("token") ||
+  "";
 
+const res = await fetch(url, {
+  method,
+  headers: {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  },
+  body: body !== undefined ? JSON.stringify(body) : undefined,
+  signal: controller.signal,
+});
     const rawText = await res.text();
 
     let data: any = null;
