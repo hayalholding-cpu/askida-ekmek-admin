@@ -1,4 +1,5 @@
 const API_BASE = (import.meta.env.VITE_API_URL || "https://api.ekmek.com.tr").trim();
+
 export const API = {
   root: `${API_BASE}/`,
 
@@ -66,6 +67,44 @@ export type DeliverSuspendedProductResponse = {
   };
 };
 
+function readTokenFromStorageObject(key: string): string {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return "";
+
+    const parsed = JSON.parse(raw);
+
+    return (
+      parsed?.token ||
+      parsed?.idToken ||
+      parsed?.accessToken ||
+      parsed?.adminToken ||
+      parsed?.user?.token ||
+      parsed?.user?.idToken ||
+      parsed?.user?.accessToken ||
+      ""
+    );
+  } catch {
+    return "";
+  }
+}
+
+function getAdminToken(): string {
+  return (
+    localStorage.getItem("admin_token") ||
+    localStorage.getItem("adminToken") ||
+    localStorage.getItem("idToken") ||
+    localStorage.getItem("token") ||
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("userToken") ||
+    readTokenFromStorageObject("adminUser") ||
+    readTokenFromStorageObject("admin") ||
+    readTokenFromStorageObject("user") ||
+    readTokenFromStorageObject("auth") ||
+    ""
+  );
+}
+
 async function request<T = any>(
   url: string,
   method: HttpMethod,
@@ -83,22 +122,18 @@ async function request<T = any>(
     console.log("[API BASE]", API_BASE);
     console.log("[API REQUEST]", method, url, body ?? null);
 
- const token =
-  localStorage.getItem("admin_token") ||
-  localStorage.getItem("adminToken") ||
-  localStorage.getItem("idToken") ||
-  localStorage.getItem("token") ||
-  "";
+    const token = getAdminToken();
 
-const res = await fetch(url, {
-  method,
-  headers: {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  },
-  body: body !== undefined ? JSON.stringify(body) : undefined,
-  signal: controller.signal,
-});
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+
     const rawText = await res.text();
 
     let data: any = null;

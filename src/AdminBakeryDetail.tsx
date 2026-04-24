@@ -125,6 +125,16 @@ export default function AdminBakeryDetail() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!success) return;
+
+    const timer = window.setTimeout(() => {
+      setSuccess("");
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, [success]);
+
   const displayName = useMemo(() => {
     if (!bakery) return "Fırın";
     return bakery.bakeryName || bakery.name || "Adsız Fırın";
@@ -166,7 +176,6 @@ export default function AdminBakeryDetail() {
     try {
       setLoading(true);
       setError("");
-      setSuccess("");
 
       const data = await apiGet(API.bakerByUid(uid));
 
@@ -252,6 +261,7 @@ export default function AdminBakeryDetail() {
     }
   }
 
+
   async function updateBakery() {
     if (!bakery || !uid) return;
 
@@ -260,7 +270,9 @@ export default function AdminBakeryDetail() {
       setError("");
       setSuccess("");
 
-      const data = await apiPut(API.bakerByUid(uid), {
+      const targetId = bakery.uid || bakery.id || uid;
+
+      const data = await apiPut(API.bakerByUid(targetId), {
         name: bakery.name || "",
         bakeryName: bakery.bakeryName || "",
         email: bakery.email || "",
@@ -271,18 +283,21 @@ export default function AdminBakeryDetail() {
         isActive: !!bakery.isActive,
       });
 
-      if (!data?.ok) {
+      console.log("UPDATE RESPONSE:", data);
+
+      if (data?.ok === false) {
         setError(data?.message || "Fırın güncellenemedi");
         return;
       }
 
-      setSuccess("Fırın bilgileri güncellendi.");
-
       const loadedBakery = await loadBakery();
       const summaryUid = loadedBakery?.uid || loadedBakery?.id || uid;
+
       if (summaryUid) {
         await loadTodaySummary(summaryUid);
       }
+
+      setSuccess("Fırın bilgileri başarıyla güncellendi.");
     } catch (e: any) {
       setError(e?.message || "Güncelleme hatası oluştu");
     } finally {
@@ -296,7 +311,6 @@ export default function AdminBakeryDetail() {
     try {
       setBreadBusy(true);
       setError("");
-      setSuccess("");
 
       const count = Number(breadCount);
 
