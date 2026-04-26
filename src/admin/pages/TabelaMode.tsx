@@ -158,6 +158,9 @@ function isIncomingType(type: string) {
 
   return (
     t === "mobile-payment" ||
+    t === "payment" ||
+    t === "incoming" ||
+    t === "mobile" ||
     t === "admin-add-bread" ||
     t === "manual-cash-add" ||
     t.includes("askiya") ||
@@ -210,7 +213,14 @@ function formatTransactionLabel(item: TransactionItem) {
 }
 
 function resolveBakeryIdFromLocalStorage() {
-  const possibleKeys = ["bakeryAuth", "bakeryUser", "bakery", "user"];
+  try {
+    const direct = localStorage.getItem("tabelaBakeryId");
+    if (direct) return direct;
+  } catch {
+    //
+  }
+
+  const possibleKeys = ["tabelaBakery", "bakeryAuth", "bakeryUser", "bakery", "user"];
 
   for (const key of possibleKeys) {
     try {
@@ -218,8 +228,13 @@ function resolveBakeryIdFromLocalStorage() {
       if (!raw) continue;
 
       const parsed = JSON.parse(raw);
-      const id = parsed?.id || parsed?.uid || parsed?.bakeryId || parsed?.bakeryUid;
-      if (id) return id;
+      const id =
+        (parsed as any)?.id ||
+        (parsed as any)?.uid ||
+        (parsed as any)?.bakeryId ||
+        (parsed as any)?.bakeryUid;
+
+      if (id) return String(id);
     } catch {
       //
     }
@@ -260,6 +275,7 @@ export default function TabelaMode() {
 
   const [bakeryId, setBakeryId] = useState<string>("");
   const [bakery, setBakery] = useState<BakeryDoc | null>(null);
+  const [bakeryLoaded, setBakeryLoaded] = useState(false);
   const [daily, setDaily] = useState<DeliveryDailyDoc | null>(null);
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
   const [busyAction, setBusyAction] = useState<string | null>(null);
@@ -433,10 +449,23 @@ export default function TabelaMode() {
   const isWide = kioskMode === "wide";
 
   useEffect(() => {
-    const id = routeBakeryId || resolveBakeryIdFromLocalStorage() || "";
-    setBakeryId(id);
-  }, [routeBakeryId]);
+  const id = String(routeBakeryId || resolveBakeryIdFromLocalStorage() || "").trim();
 
+  if (id) {
+    localStorage.setItem("tabelaBakeryId", id);
+    localStorage.setItem(
+      "tabelaBakery",
+      JSON.stringify({
+        bakeryId: id,
+        bakeryUid: id,
+        uid: id,
+        id,
+      })
+    );
+  }
+
+  setBakeryId(id);
+}, [routeBakeryId]);
   useEffect(() => {
     const timer = window.setInterval(() => {
       setLiveTime(new Date());
@@ -596,8 +625,8 @@ export default function TabelaMode() {
     }
 
     return {
-      pendingEkmek: safeNumber(bakery?.pendingEkmek),
-      pendingPide: safeNumber(bakery?.pendingPide),
+      pendingEkmek: bakery ? safeNumber(bakery.pendingEkmek) : null,
+      pendingPide: bakery ? safeNumber(bakery.pendingPide) : null,
       todayIncomingEkmek,
       todayIncomingPide,
       todayDeliveredEkmek: safeNumber(daily?.deliveredEkmek),
@@ -1265,10 +1294,25 @@ return (
                 {bakery?.bakeryName || "Tabela Modu"}
               </div>
               <div style={styles.titleAccent} />
+
               <div style={styles.headerUtilityRow}>
-                <div style={styles.headerMetaPill}>Kod: {bakery?.bakeryCode || "-"}</div>
+                <div
+                  style={{
+                    ...styles.headerMetaPill,
+                    fontSize: "18px",
+                    fontWeight: 900,
+                    background: "#fff3cd",
+                    color: "#7a4b00",
+                    padding: "12px 16px",
+                  }}
+                >
+                  FIRIN KODU: {bakery ? (bakery.bakeryCode || "-") : "..."}
+                </div>
+
                 <div style={styles.headerMetaPill}>{todayKey()}</div>
+
                 <div style={styles.liveBadge}>CANLI</div>
+
                 <div
                   style={{
                     ...styles.statusBadge,
@@ -1278,6 +1322,7 @@ return (
                   {online ? "BAĞLANTI VAR" : "BAĞLANTI YOK"}
                 </div>
               </div>
+
               <div
                 style={{
                   ...styles.statusRow,
@@ -1363,7 +1408,7 @@ return (
                     fontSize: layoutVars.heroNumberSize,
                   }}
                 >
-                  {summary.pendingEkmek}
+                 {summary.pendingEkmek ?? "..."}
                 </div>
                 <div style={{ ...styles.heroWord, ...styles.heroWordRight }}>EKMEK</div>
               </div>
@@ -1375,7 +1420,7 @@ return (
                     fontSize: layoutVars.heroNumberSize,
                   }}
                 >
-                  {summary.pendingEkmek}
+                  {summary.pendingEkmek ?? "..."}
                 </div>
                 <div style={styles.heroHint}>Güncel askı bakiyesi</div>
               </div>
